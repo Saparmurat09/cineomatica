@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'booking',
     'cinema',
     'user',
+    'languages',
+    'django_countries',
 ]
 
 MIDDLEWARE = [
