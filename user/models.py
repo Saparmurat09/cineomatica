@@ -1,6 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-class User(models.Model):
+class User(AbstractUser):
     name = models.CharField(max_length=100, blank=False)
     surname = models.CharField(max_length=100, blank=False)
 
@@ -9,9 +10,9 @@ class User(models.Model):
 
     is_admin = models.BooleanField(default=False)
 
-    birth_date = models.DateField()
+    birth_date = models.DateField(blank=True, null=True)
 
-    # TODO add clubcard creation
+
 
 
 class ClubCard(models.Model):
