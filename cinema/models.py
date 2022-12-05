@@ -1,10 +1,13 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
 from languages.fields import LanguageField
 from django_countries.fields import CountryField
+from user.models import User
 
 
 class Movie(models.Model):
-    name = models.CharField(max_length=100, blank=False)
+    title = models.CharField(max_length=100, blank=False)
     description = models.CharField(max_length=1000, blank=False)
     poster = models.URLField(blank=True)
 
@@ -14,37 +17,38 @@ class Movie(models.Model):
 
     director = models.CharField(max_length=100)
 
-    GENRES = (
-        (1, "Horror"),
-        (2, "Thriller"),
-        (3, "Comedy"),
-        (4, "Western"),
-        (5, "Sci-Fi"),
-        (6, "Fantasy"),
-    )
+    GENRES = [
+        (1, _("Horror")),
+        (2, _("Thriller")),
+        (3, _("Comedy")),
+        (4, _("Western")),
+        (5, _("Sci-Fi")),
+        (6, _("Fantasy")),
+    ]
 
-    genre = models.Choices(GENRES)
-    language = LanguageField()
+    genre = models.IntegerField(choices=GENRES, blank=True)
+
+    language = models.CharField(max_length=100, blank=False)
+    
     country = CountryField()
 
 
-    STATUS = (
-        (1, 'active'),
-        (2, 'upcoming'),
-        (3, 'inactive'),
-    )
+    class Status(models.TextChoices):
+        ACTIVE = 1, _('active')
+        UPCOMING = 2, _('upcoming')
+        INACTIVE = 3, _('inactive')
 
-    status = models.Choices(STATUS)
+    status = models.IntegerField(choices=Status.choices, blank=False, default=Status.ACTIVE)
 
-    RATING = (
-        (1, "21+"),
-        (2, "18+"),
-        (3, "16+"),
-        (4, "12+"),
-        (5, "6+"),
-    )
+    class Rating(models.IntegerChoices):
+        AGE_21 = 1, _("21+")
+        AGE_18 = 2, _("18+")
+        AGE_16 = 3, _("16+")
+        AGE_12 = 4, _("12+")
+        AGE_6 = 5, _("6+")
+    
 
-    age_rating = models.Choices(RATING)
+    age_rating = models.IntegerField(choices=Rating.choices, blank=False, default=Rating.AGE_6)
 
 
 class Cinema(models.Model):
@@ -61,7 +65,7 @@ class Address(models.Model):
     number = models.CharField(max_length=100, blank=False)
 
 
-class Contacts(models.Model):
+class Contact(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
     
     mail = models.EmailField(max_length=256)
@@ -84,8 +88,7 @@ class Seat(models.Model):
 
 class Feedback(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
-
-    # TODO add user as foreign key
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     content = models.CharField(max_length=1000, blank=False)
     
@@ -97,4 +100,4 @@ class Feedback(models.Model):
         (5, 5),
     )
 
-    rating = models.IntegerChoices(RATING)
+    rating = models.IntegerField(choices=RATING, blank=False)
