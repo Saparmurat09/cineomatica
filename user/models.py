@@ -18,12 +18,18 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_admin', True)
+        extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+
+        if not extra_fields.get('is_staff'):
+            raise ValueError('superuser must have is_staff = True') 
 
         if not extra_fields.get('is_superuser'):
             raise ValueError('superuser must have is_superuser = True') 
 
         user = self.create_user(email, password, **extra_fields)
+
+        return user
 
 
 class User(AbstractUser):
@@ -34,6 +40,7 @@ class User(AbstractUser):
     phone = models.CharField(max_length=100, blank=False)
 
     is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
     birth_date = models.DateField(blank=True, null=True)
