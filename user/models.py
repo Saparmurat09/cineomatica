@@ -51,7 +51,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.name
+        return f"{self.email} - {self.name} {self.surname} - {self.id}"
 
 
 class ClubCard(models.Model):
