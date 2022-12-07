@@ -1,12 +1,19 @@
 from rest_framework import serializers
-from .models import Movie, Cinema, Feedback, Room
+from .models import (
+    Movie, 
+    Cinema, 
+    Feedback, 
+    Room,
+    Contact,
+    Address,
+)
 
 
-class CreateMovieSerializer(serializers.ModelSerializer):
+class MovieSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        field = [
+        fields = [
             'title',
             'description',
             'poster',
@@ -24,7 +31,7 @@ class CreateMovieSerializer(serializers.ModelSerializer):
 class CinemaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cinema
-        field = [
+        fields = [
             'name',
             'description',            
         ]
@@ -33,7 +40,7 @@ class CinemaSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        field = [
+        fields = [
             'cinema',
             'phone',
             'email',
@@ -44,7 +51,7 @@ class ContactSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        field = [
+        fields = [
             'cinema',
             'city',
             'district',
@@ -55,8 +62,8 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cinema
-        field = [
+        model = Room
+        fields = [
             'cinema',
             'name',
             'description',  
@@ -66,7 +73,7 @@ class RoomSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        field = [
+        fields = [
             'cinema',
             'content',
             'rating',
