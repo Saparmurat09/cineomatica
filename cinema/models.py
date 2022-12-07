@@ -54,6 +54,11 @@ class Cinema(models.Model):
     name = models.CharField(max_length=100, blank=False)
     description = models.CharField(max_length=1000, blank=False)
 
+    # TODO create working shedule for cinema
+
+    def __str__(self):
+        return self.name
+
 
 class Address(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
@@ -100,3 +105,19 @@ class Feedback(models.Model):
     )
 
     rating = models.IntegerField(choices=RATING, blank=False)
+
+
+class Session(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+
+    start_time = models.TimeField(blank=False)
+    end_time = models.TimeField(blank=False)
+
+
+class Pricing(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.DO_NOTHING)
+
+    children = models.FloatField(default=0)
+    adult = models.FloatField(default=0)
+    student = models.FloatField(default=0)

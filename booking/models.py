@@ -1,22 +1,6 @@
 from django.db import models
-from cinema.models import Movie, Room, Seat
+from cinema.models import Movie, Room, Seat, Session
 from user.models import User
-
-class Session(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-
-    start_time = models.TimeField(blank=False)
-    end_time = models.TimeField(blank=False)
-
-
-class Pricing(models.Model):
-    session = models.ForeignKey(Session, on_delete=models.DO_NOTHING)
-    
-    children = models.FloatField(default=0)    
-    adult = models.FloatField(default=0)    
-    student = models.FloatField(default=0)    
-    
 
 
 class Order(models.Model):
@@ -24,7 +8,7 @@ class Order(models.Model):
 
     time = models.TimeField(auto_created=True)
 
-    total_price = models.FloatField(default=0)    
+    total_price = models.FloatField(default=0)
 
 
 class Ticket(models.Model):
