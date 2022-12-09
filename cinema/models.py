@@ -82,12 +82,17 @@ class Room(models.Model):
     name = models.CharField(max_length=100, blank=False)
     description = models.CharField(max_length=1000, blank=False)
 
+    def __str__(self):
+        return f"{self.name} - {self.cinema}"
 
 class Seat(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
 
     row = models.IntegerField()
-    collumn = models.IntegerField()
+    column = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.row}:{self.collumn} - {self.room}"
 
 
 class Feedback(models.Model):
