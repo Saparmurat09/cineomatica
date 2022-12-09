@@ -86,11 +86,10 @@ class FeedbackSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class SeatSerializer(serializers.HyperlinkedModelSerializer):
+class SeatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seat
         fields = [
-            'url',
             'room',
             'row',
             'column',
