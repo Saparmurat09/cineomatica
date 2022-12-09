@@ -7,6 +7,7 @@ from .views import (
     RoomView,
     ContactView,
     AddressView,
+    CreateSeatView,
 )
 
 router = routers.SimpleRouter()
@@ -20,4 +21,5 @@ router.register('address', AddressView)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('seat/', CreateSeatView.as_view({'get': 'list', 'post': 'create'}), name='seat'),
 ]
