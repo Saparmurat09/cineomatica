@@ -1,11 +1,12 @@
 from rest_framework import serializers
 from .models import (
-    Movie, 
-    Cinema, 
-    Feedback, 
+    Movie,
+    Cinema,
+    Feedback,
     Room,
     Contact,
     Address,
+    Seat,
 )
 
 
@@ -33,7 +34,7 @@ class CinemaSerializer(serializers.ModelSerializer):
         model = Cinema
         fields = [
             'name',
-            'description',            
+            'description',
         ]
 
 
@@ -66,7 +67,7 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = [
             'cinema',
             'name',
-            'description',  
+            'description',
         ]
 
 
@@ -78,3 +79,18 @@ class FeedbackSerializer(serializers.ModelSerializer):
             'content',
             'rating',
         ]
+
+
+class SeatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Seat
+        fields = [
+            'room',
+            'row',
+            'column',
+        ]
+
+
+class CreateSeatSerializer(serializers.Serializer):
+    room = serializers.IntegerField(min_value=1)
+    seats = serializers.ListField(child=serializers.IntegerField(min_value=1))
