@@ -72,8 +72,8 @@ class Address(models.Model):
 class Contact(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
     
-    mail = models.EmailField(max_length=256)
-    number = models.CharField(max_length=100, blank=False)
+    email = models.EmailField(max_length=256)
+    phone = models.CharField(max_length=100, blank=False)
 
 
 class Room(models.Model):
