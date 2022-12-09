@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import generics
+from rest_framework.response import Response
 
 from .models import (
    Movie,
@@ -48,15 +49,14 @@ class AddressView(ModelViewSet):
 
 
 class CreateSeatView(ModelViewSet):
-    queryset = Seat.objects.all()
-
     def perform_create(self, serializer):
         room = serializer.validated_data['room']
         seats = serializer.validated_data['seats'] 
 
         room = Room.objects.get(id=room)
 
-        # TODO check for repeating seat row, columns
+        data = Seat.objects.all().filter(room=room)
+        data.delete()
 
         for i in range(len(seats)):
             row = i + 1
@@ -65,7 +65,16 @@ class CreateSeatView(ModelViewSet):
                 seat = Seat.objects.create(room=room, column=column, row=row)
                 seat.save()
 
+    def list(self, request):
+        queryset = Seat.objects.all()
+        serializer = SeatSerializer(queryset, many=True)
+
+        return Response(serializer.data)
+
+    def get_queryset(self):
+        return Seat.objects.all()
+
     def get_serializer_class(self):
-        if self.request.method == 'GET':
-            return SeatSerializer
         return CreateSeatSerializer
+    
+# class 
