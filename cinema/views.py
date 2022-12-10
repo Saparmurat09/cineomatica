@@ -10,6 +10,8 @@ from .models import (
    Address,
    Contact, 
    Seat,
+   Session,
+   Pricing,
 )
 
 from .serializers import (
@@ -21,6 +23,8 @@ from .serializers import (
     ContactSerializer,
     CreateSeatSerializer,
     SeatSerializer,
+    SessionSerializer,
+    PricingSerializer,
 )
 
 class MovieView(ModelViewSet):
@@ -77,4 +81,15 @@ class CreateSeatView(ModelViewSet):
     def get_serializer_class(self):
         return CreateSeatSerializer
     
-# class 
+class SessionView(ModelViewSet):
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+
+class PricingView(ModelViewSet):
+    permission_classes = []
+    queryset = Pricing.objects.all()
+    serializer_class = PricingSerializer
+
+class FeedbackView(ModelViewSet):
+    queryset = Feedback.objects.all()
+    serializer_class = FeedbackSerializer
