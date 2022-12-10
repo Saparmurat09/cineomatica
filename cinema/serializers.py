@@ -7,6 +7,8 @@ from .models import (
     Contact,
     Address,
     Seat,
+    Session,
+    Pricing,
 )
 
 
@@ -99,3 +101,28 @@ class SeatSerializer(serializers.ModelSerializer):
 class CreateSeatSerializer(serializers.Serializer):
     room = serializers.IntegerField(min_value=1)
     seats = serializers.ListField(child=serializers.IntegerField(min_value=1))
+
+
+class PricingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pricing
+        fields = [
+            'session',
+            'children',
+            'adult',
+            'student',
+        ]
+
+
+class SessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = [
+            'movie',
+            'room',
+            'date',
+            'start_time',
+            'end_time',
+        ]
+
+
