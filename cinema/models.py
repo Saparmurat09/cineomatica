@@ -49,6 +49,8 @@ class Movie(models.Model):
 
     age_rating = models.IntegerField(choices=Rating.choices, blank=False, default=Rating.AGE_6)
 
+    def __str__(self):
+        return self.title
 
 class Cinema(models.Model):
     name = models.CharField(max_length=100, blank=False)
@@ -72,8 +74,8 @@ class Address(models.Model):
 class Contact(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
     
-    mail = models.EmailField(max_length=256)
-    number = models.CharField(max_length=100, blank=False)
+    email = models.EmailField(max_length=256)
+    phone = models.CharField(max_length=100, blank=False)
 
 
 class Room(models.Model):
@@ -83,7 +85,7 @@ class Room(models.Model):
     description = models.CharField(max_length=1000, blank=False)
 
     def __str__(self):
-        return f"{self.name} - {self.cinema}"
+        return f"{self.name} - {self.cinema.name}"
 
 class Seat(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -116,8 +118,13 @@ class Session(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
 
+    date = models.DateField()
+
     start_time = models.TimeField(blank=False)
     end_time = models.TimeField(blank=False)
+
+    def __str__(self):
+        return f'{self.movie.title} - {self.date} - {self.start_time}'
 
 
 class Pricing(models.Model):

@@ -7,14 +7,17 @@ from .models import (
     Contact,
     Address,
     Seat,
+    Session,
+    Pricing,
 )
 
 
-class MovieSerializer(serializers.ModelSerializer):
+class MovieSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Movie
         fields = [
+            'url',
             'title',
             'description',
             'poster',
@@ -29,30 +32,32 @@ class MovieSerializer(serializers.ModelSerializer):
         ]
 
 
-class CinemaSerializer(serializers.ModelSerializer):
+class CinemaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Cinema
         fields = [
+            'url',
             'name',
             'description',
         ]
 
 
-class ContactSerializer(serializers.ModelSerializer):
+class ContactSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contact
         fields = [
+            'url',
             'cinema',
             'phone',
             'email',
-
         ]
 
 
-class AddressSerializer(serializers.ModelSerializer):
+class AddressSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Address
         fields = [
+            'url',
             'cinema',
             'city',
             'district',
@@ -61,20 +66,22 @@ class AddressSerializer(serializers.ModelSerializer):
         ]
 
 
-class RoomSerializer(serializers.ModelSerializer):
+class RoomSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Room
         fields = [
+            'url',
             'cinema',
             'name',
             'description',
         ]
 
 
-class FeedbackSerializer(serializers.ModelSerializer):
+class FeedbackSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Feedback
         fields = [
+            'url',
             'cinema',
             'content',
             'rating',
@@ -94,3 +101,28 @@ class SeatSerializer(serializers.ModelSerializer):
 class CreateSeatSerializer(serializers.Serializer):
     room = serializers.IntegerField(min_value=1)
     seats = serializers.ListField(child=serializers.IntegerField(min_value=1))
+
+
+class PricingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pricing
+        fields = [
+            'session',
+            'children',
+            'adult',
+            'student',
+        ]
+
+
+class SessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = [
+            'movie',
+            'room',
+            'date',
+            'start_time',
+            'end_time',
+        ]
+
+
