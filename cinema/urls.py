@@ -8,6 +8,9 @@ from .views import (
     ContactView,
     AddressView,
     CreateSeatView,
+    SessionView,
+    PricingView,
+    FeedbackView,
 )
 
 router = routers.SimpleRouter()
@@ -17,6 +20,9 @@ router.register('cinema', CinemaView)
 router.register('room', RoomView)
 router.register('contact', ContactView)
 router.register('address', AddressView)
+router.register('session', SessionView)
+router.register('pricing', PricingView)
+router.register('feedback', FeedbackView)
 
 
 urlpatterns = [
