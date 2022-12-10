@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import generics
 from rest_framework.response import Response
+from .permissions import IsAdminOrReadOnly
 
 from .models import (
    Movie,
@@ -28,26 +29,35 @@ from .serializers import (
 )
 
 class MovieView(ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
 
 class CinemaView(ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Cinema.objects.all()
     serializer_class = CinemaSerializer
 
 
 class RoomView(ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
 
 class ContactView(ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
 
 
 class AddressView(ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
 
@@ -82,14 +92,20 @@ class CreateSeatView(ModelViewSet):
         return CreateSeatSerializer
     
 class SessionView(ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
 
 class PricingView(ModelViewSet):
-    permission_classes = []
+    permission_classes = [IsAdminOrReadOnly]
+
     queryset = Pricing.objects.all()
     serializer_class = PricingSerializer
 
 class FeedbackView(ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
