@@ -59,3 +59,6 @@ class ClubCard(models.Model):
 
     spent = models.FloatField(default=0)
     discount = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.user.name
