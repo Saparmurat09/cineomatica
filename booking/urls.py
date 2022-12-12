@@ -5,8 +5,8 @@ from .views import TicketView, OrderView
 
 router = SimpleRouter()
 
-router.register('ticket', TicketView, basename='ticket')
-router.register('order', OrderView, basename='order')
+router.register('tickets', TicketView, basename='ticket')
+router.register('orders', OrderView, basename='order')
 
 urlpatterns = [
     path('', include(router.urls)),
