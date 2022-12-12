@@ -2,11 +2,14 @@ from rest_framework import serializers
 
 from .models import Ticket, Order
 
+
 class TicketSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.id')
+
     class Meta:
         model = Ticket
         fields = [
-            'id',
+            'url',
             'user',
             'order',
             'session',
@@ -15,17 +18,17 @@ class TicketSerializer(serializers.ModelSerializer):
             'count',
         ]
 
-        read_only_fields = ['id', 'user', 'order']
-    
-    # def create(self, validated_data):
+        read_only_fields = ['user', 'order']    
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.ReadOnlyField(source='user.id')
+
     class Meta:
         model = Order
         fields = [
-            'id',
+            'url',
             'user',
             'time',
             'total_price',
         ]
-        read_only_fields = ['id', 'user', 'order']
+        read_only_fields = ['order']
