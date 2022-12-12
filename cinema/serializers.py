@@ -78,6 +78,8 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class FeedbackSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.ReadOnlyField(source='user.id')
+
     class Meta:
         model = Feedback
         fields = [
@@ -85,13 +87,16 @@ class FeedbackSerializer(serializers.HyperlinkedModelSerializer):
             'cinema',
             'content',
             'rating',
+            'user',
         ]
+        read_only_fields = ['user']
 
 
-class SeatSerializer(serializers.ModelSerializer):
+class SeatSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Seat
         fields = [
+            'url',
             'room',
             'row',
             'column',
@@ -103,10 +108,11 @@ class CreateSeatSerializer(serializers.Serializer):
     seats = serializers.ListField(child=serializers.IntegerField(min_value=1))
 
 
-class PricingSerializer(serializers.ModelSerializer):
+class PricingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Pricing
         fields = [
+            'url',
             'session',
             'children',
             'adult',
@@ -114,15 +120,17 @@ class PricingSerializer(serializers.ModelSerializer):
         ]
 
 
-class SessionSerializer(serializers.ModelSerializer):
+class SessionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Session
         fields = [
+            'url',
             'movie',
             'room',
             'date',
             'start_time',
             'end_time',
         ]
+
 
 
