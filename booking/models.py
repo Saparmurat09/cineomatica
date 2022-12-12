@@ -6,7 +6,7 @@ from user.models import User
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
 
-    time = models.TimeField(auto_created=True)
+    time = models.TimeField(auto_now=True)
 
     total_price = models.FloatField(default=0)
 
