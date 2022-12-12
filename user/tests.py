@@ -4,6 +4,7 @@ from rest_framework.reverse import reverse
 
 from .models import User, ClubCard
 from cinema import urls
+from booking import urls
 
 class RegisterLoginAuthTest(APITestCase):
     def test_register(self):
@@ -89,7 +90,7 @@ class RegisterLoginAuthTest(APITestCase):
 
         client.force_authenticate(user, token=access_token)
 
-        url = reverse('root')
+        url = reverse('ticket-list')
 
         response = client.get(url)
 
