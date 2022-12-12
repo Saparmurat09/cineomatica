@@ -5,13 +5,13 @@ from .models import Ticket, Order
 from .serializers import TicketSerializer, OrderSerializer
 
 class TicketView(viewsets.ModelViewSet):
-    queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
 
     def get_queryset(self):
         user = self.request.user
-
-        return Ticket.objects.filter(user=user)
+        if not user.is_admin:
+            return Ticket.objects.filter(user=user)
+        return Ticket.objects.all()
 
     def perform_create(self, serializer):
         order = Order.objects.create(user=self.request.user)
@@ -20,10 +20,11 @@ class TicketView(viewsets.ModelViewSet):
 
 
 class OrderView(viewsets.ModelViewSet):
-    queryset = Ticket.objects.all()
     serializer_class = OrderSerializer
 
     def get_queryset(self):
         user = self.request.user
 
-        return Order.objects.filter(user=user)
+        if not user.is_admin:
+            return Order.objects.filter(user=user)
+        return Order.objects.all()
