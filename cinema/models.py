@@ -94,7 +94,7 @@ class Seat(models.Model):
     column = models.IntegerField()
 
     def __str__(self):
-        return f"{self.row}:{self.collumn} - {self.room}"
+        return f"{self.row}:{self.column} - {self.room}"
 
 
 class Feedback(models.Model):
