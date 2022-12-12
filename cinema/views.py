@@ -1,6 +1,7 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.response import Response
+from .permissions import IsAdminOrReadOnly
 
 from .models import (
    Movie,
@@ -27,32 +28,41 @@ from .serializers import (
     PricingSerializer,
 )
 
-class MovieView(ModelViewSet):
+class MovieView(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
 
-class CinemaView(ModelViewSet):
+class CinemaView(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Cinema.objects.all()
     serializer_class = CinemaSerializer
 
 
-class RoomView(ModelViewSet):
+class RoomView(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
 
-class ContactView(ModelViewSet):
+class ContactView(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
 
 
-class AddressView(ModelViewSet):
+class AddressView(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
 
 
-class CreateSeatView(ModelViewSet):
+class CreateSeatView(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         room = serializer.validated_data['room']
         seats = serializer.validated_data['seats'] 
@@ -81,15 +91,21 @@ class CreateSeatView(ModelViewSet):
     def get_serializer_class(self):
         return CreateSeatSerializer
     
-class SessionView(ModelViewSet):
+class SessionView(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
 
-class PricingView(ModelViewSet):
-    permission_classes = []
+class PricingView(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+
     queryset = Pricing.objects.all()
     serializer_class = PricingSerializer
 
-class FeedbackView(ModelViewSet):
+class FeedbackView(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

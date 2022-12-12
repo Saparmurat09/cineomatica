@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, ClubCard
 
 from django.contrib.auth.password_validation import validate_password
 
@@ -39,5 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.username = validated_data['email']
         user.save()
+
+        ClubCard.objects.create(user=user)
 
         return user
