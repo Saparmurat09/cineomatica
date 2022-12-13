@@ -92,15 +92,18 @@ class FeedbackSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = ['user']
 
 
-class SeatSerializer(serializers.HyperlinkedModelSerializer):
+class SeatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seat
         fields = [
-            'url',
+            'id',
             'room',
             'row',
             'column',
         ]
+
+        read_only_fields = ['id']
+
 
 
 class CreateSeatSerializer(serializers.Serializer):
