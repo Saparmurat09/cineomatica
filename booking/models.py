@@ -24,4 +24,4 @@ class Ticket(models.Model):
     )
 
     category = models.IntegerField(choices=CATEGORY, blank=False)
-    count = models.IntegerField(default=1)
+
