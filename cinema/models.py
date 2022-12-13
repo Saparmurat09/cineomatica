@@ -96,6 +96,11 @@ class Seat(models.Model):
     def __str__(self):
         return f"{self.row}:{self.column} - {self.room}"
 
+    class Meta:
+        unique_together = (
+            ('row', 'column'),
+        )
+        
 
 class Feedback(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
