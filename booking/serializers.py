@@ -17,7 +17,6 @@ class TicketSerializer(serializers.ModelSerializer):
             'category',
         ]
 
-        read_only_fields = ['user', 'order']   
 
 class Seats(serializers.Serializer):
     row = serializers.IntegerField(required=True)
@@ -25,9 +24,18 @@ class Seats(serializers.Serializer):
     category = serializers.IntegerField(required=True)
 
 
+class BookTicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookTicket
+        fields = [
+            'row',
+            'column',
+            'category',
+        ]
+
 class CreateTicketSerializer(serializers.Serializer):
     session = serializers.IntegerField(required=True)
-    seats = Seats(many=True)
+    seats = BookTicketSerializer(many=True)
 
 
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
