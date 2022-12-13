@@ -1,10 +1,10 @@
-from rest_framework import serializers
+from rest_framework import serializers, validators
 
-from .models import Ticket, Order
+from .models import Ticket, Order, BookTicket
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.id')
+    user = serializers.ReadOnlyField(source='user.name')
 
     class Meta:
         model = Ticket
@@ -15,10 +15,20 @@ class TicketSerializer(serializers.ModelSerializer):
             'session',
             'seat',
             'category',
-            'count',
         ]
 
-        read_only_fields = ['user', 'order']    
+        read_only_fields = ['user', 'order']   
+
+class Seats(serializers.Serializer):
+    row = serializers.IntegerField(required=True)
+    column = serializers.IntegerField(required=True)
+    category = serializers.IntegerField(required=True)
+
+
+class CreateTicketSerializer(serializers.Serializer):
+    session = serializers.IntegerField(required=True)
+    seats = Seats(many=True)
+
 
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.ReadOnlyField(source='user.id')

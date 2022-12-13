@@ -1,8 +1,12 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.permissions import SAFE_METHODS
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+
 
 from .models import Ticket, Order
 
-from .serializers import TicketSerializer, OrderSerializer
+from .serializers import TicketSerializer, OrderSerializer, CreateTicketSerializer
 
 class TicketView(viewsets.ModelViewSet):
     serializer_class = TicketSerializer
@@ -13,10 +17,26 @@ class TicketView(viewsets.ModelViewSet):
             return Ticket.objects.filter(user=user)
         return Ticket.objects.all()
 
-    def perform_create(self, serializer):
-        order = Order.objects.create(user=self.request.user)
-        serializer.save(user=self.request.user, order=order)
+    def create(self, request):
+        user = request.user
+        data = request.data
+    
+        # if not 'seats' in data or not 'session' in data:
+        #     return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            # raise ValidationError('data')
+        
+        # order = Order.objects.create(user=user)
+        # print(user)
+        # print(data['seats'])
 
+        return Response(data, status=status.HTTP_201_CREATED)
+
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CreateTicketSerializer
+        
+        return TicketSerializer
 
 
 class OrderView(viewsets.ModelViewSet):
