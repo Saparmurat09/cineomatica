@@ -6,6 +6,8 @@ from rest_framework.reverse import reverse
 
 from rest_framework_nested import routers
 
+from booking.urls import router as rt
+
 from .views import (
     MovieView,
     CinemaView,
@@ -29,10 +31,11 @@ movies_router.register('sessions', SessionView, basename='movies-sessions')
 router.register('cinemas', CinemaView, basename='cinema')
 router.register('rooms', RoomView, basename='room')
 router.register('contacts', ContactView, basename='contact')
-router.register('addresss', AddressView, basename='address')
+router.register('addresses', AddressView, basename='address')
 router.register('sessions', SessionView, basename='session')
 router.register('pricings', PricingView, basename='pricing')
 router.register('feedbacks', FeedbackView, basename='feedback')
+
 
 
 @api_view(['GET'])
@@ -43,6 +46,10 @@ def api_root(request, format=None):
         'rooms': reverse('room-list', request=request, format=format),
         'sessions': reverse('session-list', request=request, format=format),
         'feedbacks': reverse('feedback-list', request=request, format=format),
+        'pricings': reverse('pricing-list', request=request, format=format),
+        'addresses': reverse('address-list', request=request, format=format),
+        'contacts': reverse('contact-list', request=request, format=format),
+        'tickets': reverse('ticket-list', request=request, format=format),
     })
 
 urlpatterns = [
