@@ -25,3 +25,15 @@ class Ticket(models.Model):
 
     category = models.IntegerField(choices=CATEGORY, blank=False)
 
+
+class BookTicket(models.Model):
+    row = models.IntegerField()
+    column = models.IntegerField()
+
+    CATEGORY = (
+        (1, "Children"),
+        (2, "Student"),
+        (3, "Adult"),
+    )
+
+    category = models.IntegerField(choices=CATEGORY, blank=False)
