@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status, generics
-from rest_framework.permissions import SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
@@ -17,6 +17,7 @@ from .serializers import (
 )
 
 class TicketView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     serializer_class = TicketSerializer
 
     def get_queryset(self):
@@ -130,8 +131,11 @@ class OrderView(viewsets.ModelViewSet):
 
 
 class PurchasesView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     
     serializer_class = OrderSerializer
+
+    allowed_methods = ['GET', 'HEAD']
 
     def get_queryset(self):
         user = self.request.user
@@ -142,6 +146,7 @@ class PurchasesView(viewsets.ModelViewSet):
 
 
 class PayOrderView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = PayOrderSerializer
 
     def create(self, request, *args, **kwargs):
