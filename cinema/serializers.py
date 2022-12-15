@@ -12,7 +12,7 @@ from .models import (
 )
 
 
-class MovieSerializer(serializers.HyperlinkedModelSerializer):
+class ListMovieSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Movie
@@ -32,7 +32,26 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class CinemaSerializer(serializers.HyperlinkedModelSerializer):
+class CreateMovieSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Movie
+        fields = [
+            'title',
+            'description',
+            'poster',
+            'duration',
+            'year',
+            'director',
+            'genre',
+            'language',
+            'country',
+            'status',
+            'age_rating',
+        ]
+
+
+class ListCinemaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Cinema
         fields = [
@@ -42,7 +61,16 @@ class CinemaSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class ContactSerializer(serializers.HyperlinkedModelSerializer):
+class CreateCinemaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cinema
+        fields = [
+            'name',
+            'description',
+        ]
+
+
+class ListContactSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contact
         fields = [
@@ -53,7 +81,17 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class AddressSerializer(serializers.HyperlinkedModelSerializer):
+class CreateContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = [
+            'cinema',
+            'phone',
+            'email',
+        ]
+
+
+class ListAddressSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Address
         fields = [
@@ -66,7 +104,19 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class RoomSerializer(serializers.HyperlinkedModelSerializer):
+class CreateAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = [
+            'cinema',
+            'city',
+            'district',
+            'street',
+            'number',
+        ]
+
+
+class ListRoomSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Room
         fields = [
@@ -77,7 +127,17 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class FeedbackSerializer(serializers.HyperlinkedModelSerializer):
+class CreateRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = [
+            'cinema',
+            'name',
+            'description',
+        ]
+
+
+class ListFeedbackSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.ReadOnlyField(source='user.id')
 
     class Meta:
@@ -90,6 +150,16 @@ class FeedbackSerializer(serializers.HyperlinkedModelSerializer):
             'user',
         ]
         read_only_fields = ['user']
+
+
+class CreateFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = [
+            'cinema',
+            'content',
+            'rating',
+        ]
 
 
 class SeatSerializer(serializers.ModelSerializer):
@@ -105,13 +175,12 @@ class SeatSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
-
 class CreateSeatSerializer(serializers.Serializer):
     room = serializers.IntegerField(min_value=1)
     seats = serializers.ListField(child=serializers.IntegerField(min_value=1))
 
 
-class PricingSerializer(serializers.HyperlinkedModelSerializer):
+class ListPricingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Pricing
         fields = [
@@ -123,7 +192,18 @@ class PricingSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class SessionSerializer(serializers.HyperlinkedModelSerializer):
+class CreatePricingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pricing
+        fields = [
+            'session',
+            'children',
+            'adult',
+            'student',
+        ]
+
+
+class ListSessionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Session
         fields = [
@@ -136,4 +216,13 @@ class SessionSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-
+class CreateSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = [
+            'movie',
+            'room',
+            'date',
+            'start_time',
+            'end_time',
+        ]

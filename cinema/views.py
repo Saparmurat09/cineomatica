@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from rest_framework import generics
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
@@ -18,59 +17,87 @@ from .models import (
 )
 
 from .serializers import (
-    MovieSerializer,
-    CinemaSerializer,
-    RoomSerializer,
-    FeedbackSerializer,
-    AddressSerializer,
-    ContactSerializer,
+    ListMovieSerializer,
+    ListCinemaSerializer,
+    ListRoomSerializer,
+    ListFeedbackSerializer,
+    ListAddressSerializer,
+    ListContactSerializer,
+    ListSessionSerializer,
+    ListPricingSerializer,
+    CreateMovieSerializer,
+    CreateCinemaSerializer,
+    CreateRoomSerializer,
+    CreateFeedbackSerializer,
+    CreateAddressSerializer,
+    CreateContactSerializer,
     CreateSeatSerializer,
+    CreateSessionSerializer,
+    CreatePricingSerializer,
     SeatSerializer,
-    SessionSerializer,
-    PricingSerializer,
 )
+
 
 class MovieView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
     queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
+
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return CreateMovieSerializer
+        return ListMovieSerializer
 
 
 class CinemaView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
     queryset = Cinema.objects.all()
-    serializer_class = CinemaSerializer
+
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return CreateCinemaSerializer
+        return ListCinemaSerializer
 
 
 class RoomView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
-
-    serializer_class = RoomSerializer
 
     def get_queryset(self):
         if 'cinema_pk' in self.kwargs:
             return Room.objects.filter(cinema=self.kwargs['cinema_pk'])
         return Room.objects.all()
 
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return CreateRoomSerializer
+        return ListRoomSerializer
+
 
 class ContactView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
 
     def get_queryset(self):
         if 'cinema_pk' in self.kwargs:
             return Contact.objects.filter(cinema=self.kwargs['cinema_pk'])
         return Contact.objects.all()
 
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return CreateContactSerializer
+        return ListContactSerializer
+
 
 class AddressView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
     queryset = Address.objects.all()
-    serializer_class = AddressSerializer
+
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return CreateAddressSerializer
+        return ListAddressSerializer
 
 
 class CreateSeatView(viewsets.ModelViewSet):
@@ -102,27 +129,34 @@ class CreateSeatView(viewsets.ModelViewSet):
     def get_serializer_class(self):
         return CreateSeatSerializer
 
+
 class SessionView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
-
-    serializer_class = SessionSerializer
 
     def get_queryset(self):
         if 'movie_pk' in self.kwargs:
             return Session.objects.filter(movie=self.kwargs['movie_pk'])
         return Session.objects.all()
 
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return CreateSessionSerializer
+        return ListSessionSerializer
+
 
 class PricingView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
     queryset = Pricing.objects.all()
-    serializer_class = PricingSerializer
+
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return CreatePricingSerializer
+        return ListPricingSerializer
+
 
 class FeedbackView(viewsets.ModelViewSet):
-
     queryset = Feedback.objects.all()
-    serializer_class = FeedbackSerializer
 
     def get_queryset(self):
         if 'movie_pk' in self.kwargs:
@@ -132,12 +166,16 @@ class FeedbackView(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-    
+
     def get_permissions(self):
-        if not self.request.method in SAFE_METHODS:
+        if self.request.method not in SAFE_METHODS:
             permission_classes = [IsOwnerOrReadOnly]
         else:
             permission_classes = [IsAuthenticatedOrReadOnly]
 
         return [permission() for permission in permission_classes]
 
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return CreateFeedbackSerializer
+        return ListFeedbackSerializer
