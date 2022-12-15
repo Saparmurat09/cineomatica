@@ -10,6 +10,10 @@ class Order(models.Model):
 
     total_price = models.FloatField(default=0)
 
+    paid = models.BooleanField(default=False)
+
+    payment_method = models.CharField(max_length=16, help_text='Enter Credit Card', null=True)
+
 
 class Ticket(models.Model):
     session = models.ForeignKey(Session, on_delete=models.DO_NOTHING)

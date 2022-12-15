@@ -50,3 +50,11 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
             'total_price',
         ]
         read_only_fields = ['order']
+
+
+class PayOrderSerializer(serializers.Serializer):
+    order = serializers.IntegerField()
+    payment_method = serializers.CharField(max_length=16)
+
+    def validate_payment_method(self, value):
+        return len(value) == 16
