@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
@@ -7,15 +7,21 @@ from rest_framework.exceptions import ValidationError
 from .models import Ticket, Order
 
 from cinema.models import Session, Room, Seat, Pricing
+from user.models import ClubCard
 
-from .serializers import TicketSerializer, OrderSerializer, CreateTicketSerializer
+from .serializers import (
+    TicketSerializer, 
+    OrderSerializer, 
+    CreateTicketSerializer,
+    PayOrderSerializer,
+)
 
 class TicketView(viewsets.ModelViewSet):
     serializer_class = TicketSerializer
 
     def get_queryset(self):
         user = self.request.user
-        if not user.is_admin:
+        if not user.is_staff:
             return Ticket.objects.filter(user=user)
         return Ticket.objects.all()
 
@@ -69,6 +75,8 @@ class TicketView(viewsets.ModelViewSet):
 
         order = Order.objects.create(user=user)
 
+        total_price = 0.0
+
         ret = {
             'Tickets': []
         }
@@ -88,6 +96,18 @@ class TicketView(viewsets.ModelViewSet):
                     'Data': record
                 })
 
+            if record['category'] == 1:
+                total_price += pricing.children
+            elif record['category'] == 2:
+                total_price += pricing.student
+            else:
+                total_price += pricing.adult
+        
+        clubcard = ClubCard.objects.get(user=user)
+
+        order.total_price = total_price - total_price * (clubcard.discount/100)
+        order.save()
+
         return Response(ret, status=status.HTTP_201_CREATED)
 
 
@@ -104,6 +124,50 @@ class OrderView(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        if not user.is_admin:
-            return Order.objects.filter(user=user)
+        if not user.is_staff:
+            return Order.objects.filter(user=user, )
         return Order.objects.all()
+
+
+class PurchasesView(viewsets.ModelViewSet):
+    
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if not user.is_staff:
+            return Order.objects.filter(user=user, paid=True)
+        return Order.objects.filter(paid=True)
+
+
+class PayOrderView(generics.CreateAPIView):
+    serializer_class = PayOrderSerializer
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+
+        try:
+            order = request.data['order']
+            payment_method = request.data['payment_method']
+        except:
+            raise ValidationError({"Invalid data": request.data})
+
+        try:
+            order = Order.objects.get(id=order)
+        except Order.DoesNotExist:
+            raise ValidationError({'Order': 'Order does not exist'})
+        
+        order.payment_method = payment_method
+        order.paid = True
+        order.save()
+
+        clubcard = ClubCard.objects.get(user=user)
+        clubcard.spent += order.total_price
+
+        if clubcard.spent > 5000:        
+            clubcard.discount = clubcard.spent // 5000
+
+        clubcard.save()
+
+        return Response({"Successful Payment": OrderSerializer(instance=order, context={'request':request}).data})
