@@ -28,7 +28,15 @@ movies_router = routers.NestedSimpleRouter(router, 'movies', lookup='movie')
 movies_router.register('sessions', SessionView, basename='movies-sessions')
 
 
-router.register('cinemas', CinemaView, basename='cinema')
+crouter = routers.SimpleRouter()
+crouter.register('cinemas', CinemaView, basename='cinema')
+
+cinemas_router = routers.NestedSimpleRouter(crouter, 'cinemas', lookup='cinema')
+cinemas_router.register('rooms', RoomView, basename='cinemas-rooms')
+# cinemas_router.register('contacts', ContactView, basename='cinemas-contacts')
+# cinemas_router.register('addresses', AddressView, basename='cinemas-addresses')
+# cinemas_router.register('feedbacks', FeedbackView, basename='cinemas-feedbacks')
+
 router.register('rooms', RoomView, basename='room')
 router.register('contacts', ContactView, basename='contact')
 router.register('addresses', AddressView, basename='address')
@@ -50,11 +58,13 @@ def api_root(request, format=None):
         'addresses': reverse('address-list', request=request, format=format),
         'contacts': reverse('contact-list', request=request, format=format),
         'tickets': reverse('ticket-list', request=request, format=format),
+        'payment':reverse('payment', request=request, format=format),
     })
 
 urlpatterns = [
     path('', api_root, name='root'),
     path('', include(router.urls)),
+    path('', include(crouter.urls)),
     path('', include(movies_router.urls)),
     path('seat/', CreateSeatView.as_view({'get': 'list', 'post': 'create'}), name='seat'),
 ]

@@ -47,14 +47,23 @@ class CinemaView(viewsets.ModelViewSet):
 class RoomView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
-    queryset = Room.objects.all()
     serializer_class = RoomSerializer
+
+    def get_queryset(self):
+        if 'cinema_pk' in self.kwargs:
+            return Room.objects.filter(cinema=self.kwargs['cinema_pk'])
+        return Room.objects.all()
 
 
 class ContactView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
+
+    def get_queryset(self):
+        if 'cinema_pk' in self.kwargs:
+            return Contact.objects.filter(cinema=self.kwargs['cinema_pk'])
+        return Contact.objects.all()
 
 
 class AddressView(viewsets.ModelViewSet):
