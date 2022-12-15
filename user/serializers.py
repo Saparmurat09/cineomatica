@@ -43,3 +43,13 @@ class UserSerializer(serializers.ModelSerializer):
         clubcard.save()
 
         return user
+
+
+class ClubCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClubCard
+        fields = [
+            'user',
+            'spent',
+            'discount',
+        ]
