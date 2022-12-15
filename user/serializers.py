@@ -34,12 +34,12 @@ class UserSerializer(serializers.ModelSerializer):
             name=validated_data['name'],
             surname=validated_data['surname'],
             birth_date=validated_data['birth_date'],
-            is_admin=validated_data['is_admin'],
         )
         user.set_password(validated_data['password'])
         user.username = validated_data['email']
         user.save()
 
-        ClubCard.objects.create(user=user)
+        clubcard = ClubCard.objects.create(user=user)
+        clubcard.save()
 
         return user
