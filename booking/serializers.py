@@ -1,4 +1,4 @@
-from rest_framework import serializers, validators
+from rest_framework import serializers
 
 from .models import Ticket, Order, BookTicket
 
@@ -32,6 +32,7 @@ class BookTicketSerializer(serializers.ModelSerializer):
             'column',
             'category',
         ]
+
 
 class CreateTicketSerializer(serializers.Serializer):
     session = serializers.IntegerField(required=True)
