@@ -38,7 +38,7 @@ class TicketView(viewsets.ModelViewSet):
         if len(seats) > 6:
             raise ValidationError({
                 'Tickets': 'Can book only 6 tickets for a session'
-                })
+            })
 
         try:
             session = Session.objects.get(id=session)
@@ -55,7 +55,7 @@ class TicketView(viewsets.ModelViewSet):
             except KeyError:
                 raise ValidationError({
                     "Invalid data": seats
-                    })
+                })
 
             print(seat)
 
@@ -107,7 +107,7 @@ class TicketView(viewsets.ModelViewSet):
                 raise ValidationError({
                     'Ticket': 'Invalid data',
                     'Data': record
-                    })
+                })
 
             if record['category'] == 1:
                 total_price += pricing.children
@@ -133,14 +133,14 @@ class TicketView(viewsets.ModelViewSet):
 class OrderView(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
 
-    allowed_methods = ['GET', 'HEAD']
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
 
         if not user.is_staff:
-            return Order.objects.filter(user=user, )
-        return Order.objects.all()
+            return Order.objects.filter(user=user, paid=False)
+        return Order.objects.filter(paid=False)
 
 
 class PurchasesView(viewsets.ModelViewSet):
