@@ -1,5 +1,6 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
+
 class IsAdminOrReadOnly(BasePermission):
 
     def has_permission(self, request, view):
@@ -16,4 +17,3 @@ class IsOwnerOrReadOnly(BasePermission):
             return True
 
         return obj.user == request.user
-        
