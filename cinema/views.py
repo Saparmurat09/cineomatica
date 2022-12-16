@@ -1,19 +1,20 @@
 from rest_framework import viewsets
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 
 from .models import (
-   Movie,
-   Cinema,
-   Room,
-   Feedback,
-   Address,
-   Contact,
-   Seat,
-   Session,
-   Pricing,
+    Movie,
+    Cinema,
+    Room,
+    Feedback,
+    Address,
+    Contact,
+    Seat,
+    Session,
+    Pricing,
 )
 
 from .serializers import (
@@ -41,12 +42,44 @@ from .serializers import (
 class MovieView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
-    queryset = Movie.objects.all()
+    class Meta:
+        ordering = [
+            '-year',
+        ]
+
+    def get_queryset(self):
+        return Movie.objects.filter(status=1)
 
     def get_serializer_class(self):
         if self.request.method not in SAFE_METHODS:
             return CreateMovieSerializer
         return ListMovieSerializer
+
+    @action(detail=False)
+    def hidden(self, request):
+        hidden_movies = Movie.objects.filter(status=3)
+
+        page = self.paginate_queryset(hidden_movies)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(hidden_movies, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def upcoming(self, request):
+        hidden_movies = Movie.objects.filter(status=2)
+
+        page = self.paginate_queryset(hidden_movies)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(hidden_movies, many=True)
+        return Response(serializer.data)
 
 
 class CinemaView(viewsets.ModelViewSet):
@@ -133,9 +166,16 @@ class CreateSeatView(viewsets.ModelViewSet):
 class SessionView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
+    class Meta:
+        ordering = ['date']
+
     def get_queryset(self):
         if 'movie_pk' in self.kwargs:
             return Session.objects.filter(movie=self.kwargs['movie_pk'])
+
+        if 'room_pk' in self.kwargs:
+            return Session.objects.filter(movie=self.kwargs['room_pk'])
+
         return Session.objects.all()
 
     def get_serializer_class(self):
@@ -147,7 +187,10 @@ class SessionView(viewsets.ModelViewSet):
 class PricingView(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
-    queryset = Pricing.objects.all()
+    def get_queryset(self):
+        if 'session_pk' in self.kwargs:
+            return Pricing.objects.filter(session=self.kwargs['session_pk'])
+        return Pricing.objects.all()
 
     def get_serializer_class(self):
         if self.request.method not in SAFE_METHODS:
