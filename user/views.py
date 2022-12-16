@@ -17,5 +17,5 @@ class ClubCardView(generics.ListAPIView):
     def get(self, request):
         clubcard = ClubCard.objects.get(user=request.user)
         serializer = ClubCardSerializer(instance=clubcard)
-        
+
         return Response(serializer.data, status=status.HTTP_200_OK)
