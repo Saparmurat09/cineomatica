@@ -10,6 +10,10 @@ class Order(models.Model):
 
     total_price = models.FloatField(default=0)
 
+    paid = models.BooleanField(default=False)
+
+    payment_method = models.CharField(max_length=16, help_text='Enter Credit Card', null=True)
+
 
 class Ticket(models.Model):
     session = models.ForeignKey(Session, on_delete=models.DO_NOTHING)
@@ -24,4 +28,16 @@ class Ticket(models.Model):
     )
 
     category = models.IntegerField(choices=CATEGORY, blank=False)
-    count = models.IntegerField(default=1)
+
+
+class BookTicket(models.Model):
+    row = models.IntegerField()
+    column = models.IntegerField()
+
+    CATEGORY = (
+        (1, "Children"),
+        (2, "Student"),
+        (3, "Adult"),
+    )
+
+    category = models.IntegerField(choices=CATEGORY, blank=False)

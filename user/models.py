@@ -39,7 +39,6 @@ class User(AbstractUser):
     email = models.EmailField(max_length=256, blank=False, unique=True)
     phone = models.CharField(max_length=100, blank=False)
 
-    is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 

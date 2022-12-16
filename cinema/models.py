@@ -28,16 +28,19 @@ class Movie(models.Model):
     genre = models.IntegerField(choices=GENRES, blank=True)
 
     language = models.CharField(max_length=100, blank=False)
-    
-    country = CountryField()
 
+    country = CountryField()
 
     class Status(models.TextChoices):
         ACTIVE = 1, _('active')
         UPCOMING = 2, _('upcoming')
         INACTIVE = 3, _('inactive')
 
-    status = models.IntegerField(choices=Status.choices, blank=False, default=Status.ACTIVE)
+    status = models.IntegerField(
+        choices=Status.choices,
+        blank=False,
+        default=Status.ACTIVE
+        )
 
     class Rating(models.IntegerChoices):
         AGE_21 = 1, _("21+")
@@ -45,12 +48,16 @@ class Movie(models.Model):
         AGE_16 = 3, _("16+")
         AGE_12 = 4, _("12+")
         AGE_6 = 5, _("6+")
-    
 
-    age_rating = models.IntegerField(choices=Rating.choices, blank=False, default=Rating.AGE_6)
+    age_rating = models.IntegerField(
+        choices=Rating.choices,
+        blank=False,
+        default=Rating.AGE_6
+        )
 
     def __str__(self):
         return self.title
+
 
 class Cinema(models.Model):
     name = models.CharField(max_length=100, blank=False)
@@ -64,7 +71,7 @@ class Cinema(models.Model):
 
 class Address(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
-    
+
     city = models.CharField(max_length=100, blank=False)
     district = models.CharField(max_length=100, blank=False)
     street = models.CharField(max_length=100, blank=False)
@@ -73,19 +80,20 @@ class Address(models.Model):
 
 class Contact(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
-    
+
     email = models.EmailField(max_length=256)
     phone = models.CharField(max_length=100, blank=False)
 
 
 class Room(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
-    
+
     name = models.CharField(max_length=100, blank=False)
     description = models.CharField(max_length=1000, blank=False)
 
     def __str__(self):
         return f"{self.name} - {self.cinema.name}"
+
 
 class Seat(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -96,13 +104,18 @@ class Seat(models.Model):
     def __str__(self):
         return f"{self.row}:{self.column} - {self.room}"
 
+    class Meta:
+        unique_together = (
+            ('row', 'column'),
+        )
+
 
 class Feedback(models.Model):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     content = models.CharField(max_length=1000, blank=False)
-    
+
     RATING = (
         (1, 1),
         (2, 2),

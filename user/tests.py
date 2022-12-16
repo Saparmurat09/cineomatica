@@ -3,8 +3,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 
 from .models import User, ClubCard
-from cinema import urls
-from booking import urls
+
 
 class RegisterLoginAuthTest(APITestCase):
     def test_register(self):
@@ -15,7 +14,7 @@ class RegisterLoginAuthTest(APITestCase):
             'name': 'Userbek',
             'surname': 'Useruulu',
             'phone': '+996700112233',
-            'is_admin': False,
+            'is_staff': False,
             'birth_date': '2002-12-12',
             'password': 'Peasant12',
             'password2': 'Peasant12'
@@ -35,14 +34,14 @@ class RegisterLoginAuthTest(APITestCase):
             'name': 'Userbek',
             'surname': 'Useruulu',
             'phone': '+996700112233',
-            'is_admin': False,
+            'is_staff': False,
             'birth_date': '2002-12-12',
             'password': 'Peasant12',
             'password2': 'Peasant12'
         }
 
         response = self.client.post(url, data)
-        
+
         data = {
             'email': 'user@mail.com',
             'password': 'Peasant12'
@@ -65,7 +64,7 @@ class RegisterLoginAuthTest(APITestCase):
             'name': 'Userbek',
             'surname': 'Useruulu',
             'phone': '+996700112233',
-            'is_admin': False,
+            'is_staff': False,
             'birth_date': '2002-12-12',
             'password': 'Peasant12',
             'password2': 'Peasant12'
@@ -85,7 +84,7 @@ class RegisterLoginAuthTest(APITestCase):
         access_token = response.json()['access']
 
         client = APIClient()
-        
+
         user = User.objects.last()
 
         client.force_authenticate(user, token=access_token)
