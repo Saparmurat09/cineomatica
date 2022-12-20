@@ -11,6 +11,7 @@ from user.models import ClubCard
 
 from .serializers import (
     TicketSerializer,
+    ListTicketSerializer,
     OrderSerializer,
     CreateTicketSerializer,
     PayOrderSerializer,
@@ -127,7 +128,7 @@ class TicketView(viewsets.ModelViewSet):
         if self.request.method == 'POST':
             return CreateTicketSerializer
 
-        return TicketSerializer
+        return ListTicketSerializer
 
 
 class OrderView(viewsets.ModelViewSet):

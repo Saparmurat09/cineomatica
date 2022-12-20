@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Ticket, Order, BookTicket
 
 
-class TicketSerializer(serializers.HyperlinkedModelSerializer):
+class ListTicketSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.ReadOnlyField(source='user.id')
     row = serializers.ReadOnlyField(source='seat.row')
     column = serializers.ReadOnlyField(source='seat.column')
@@ -18,6 +18,18 @@ class TicketSerializer(serializers.HyperlinkedModelSerializer):
             'room',
             'row',
             'column',
+            'category',
+            'user',
+        ]
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = [
+            'order',
+            'session',
+            'seat',
             'category',
             'user',
         ]
