@@ -9,6 +9,7 @@ from .models import (
     Seat,
     Session,
     Pricing,
+    ScheduleDay,
 )
 
 
@@ -68,6 +69,15 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
             'name',
             'description',
         ]
+
+    def create(self, validated_data):
+        cinema = Cinema.objects.create(**validated_data)
+
+        for i in range(1, 8):
+            schedule = ScheduleDay.objects.create(cinema=cinema, day=i)
+            schedule.save()
+
+        return cinema
 
 
 class ListContactSerializer(serializers.HyperlinkedModelSerializer):
@@ -225,4 +235,17 @@ class CreateSessionSerializer(serializers.ModelSerializer):
             'date',
             'start_time',
             'end_time',
+        ]
+
+
+class ScheduleSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = ScheduleDay
+        fields = [
+            'url',
+            'cinema',
+            'day',
+            'opening',
+            'closing',
         ]

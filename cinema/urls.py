@@ -16,6 +16,7 @@ from .views import (
     SessionView,
     PricingView,
     FeedbackView,
+    ScheduleView,
 )
 
 router = routers.SimpleRouter()
@@ -39,6 +40,12 @@ cinemas_router.register('rooms', RoomView, basename='cinemas-rooms')
 cinemas_router.register('contact', ContactView, basename='cinemas-contact')
 cinemas_router.register('address', AddressView, basename='cinemas-address')
 cinemas_router.register('feedbacks', FeedbackView, basename='cinema-feedbacks')
+cinemas_router.register('schedule', ScheduleView,
+                        basename='cinema-schedule')
+
+router.register('schedule', ScheduleView,
+                basename='scheduleday')
+
 
 router.register('rooms', RoomView, basename='room')
 room_router = routers.NestedSimpleRouter(router, 'rooms', lookup='room')

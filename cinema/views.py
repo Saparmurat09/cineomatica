@@ -15,6 +15,7 @@ from .models import (
     Seat,
     Session,
     Pricing,
+    ScheduleDay,
 )
 
 from .serializers import (
@@ -36,6 +37,7 @@ from .serializers import (
     CreateSessionSerializer,
     CreatePricingSerializer,
     SeatSerializer,
+    ScheduleSerializer,
 )
 
 
@@ -222,3 +224,15 @@ class FeedbackView(viewsets.ModelViewSet):
         if self.request.method not in SAFE_METHODS:
             return CreateFeedbackSerializer
         return ListFeedbackSerializer
+
+
+class ScheduleView(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+    serializer_class = ScheduleSerializer
+    allowed_methods = ['PUT', 'GET', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']
+
+    def get_queryset(self):
+        if 'cinema_pk' in self.kwargs:
+            return ScheduleDay.objects.filter(cinema=self.kwargs['cinema_pk'])
+
+        return ScheduleDay.objects.all()
