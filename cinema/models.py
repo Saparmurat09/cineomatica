@@ -40,7 +40,7 @@ class Movie(models.Model):
         choices=Status.choices,
         blank=False,
         default=Status.ACTIVE
-        )
+    )
 
     class Rating(models.IntegerChoices):
         AGE_21 = 1, _("21+")
@@ -53,7 +53,7 @@ class Movie(models.Model):
         choices=Rating.choices,
         blank=False,
         default=Rating.AGE_6
-        )
+    )
 
     def __str__(self):
         return self.title
@@ -146,3 +146,12 @@ class Pricing(models.Model):
     children = models.FloatField(default=0)
     adult = models.FloatField(default=0)
     student = models.FloatField(default=0)
+
+
+class ScheduleDay(models.Model):
+    cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
+
+    day = models.IntegerField(blank=False, null=False)
+
+    opening = models.TimeField(blank=True, null=True)
+    closing = models.TimeField(blank=True, null=True)
